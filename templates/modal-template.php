@@ -2,6 +2,7 @@
 
 ?>
 
-<div class="c-modal-window" >
-    <p>This is just a modal window testing template directory</p>
-</div>
+  <div id="covModal" data-modal="covPopup" style="display:none;">
+    covModal data modal
+  </div>
+
