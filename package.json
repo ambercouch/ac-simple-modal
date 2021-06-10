@@ -1,0 +1,27 @@
+{
+  "name": "ac-simple-modal",
+  "description": "A WordPress plugin that adds a modaal popup to you theme.",
+  "homepage": "https://github.com/ambercouch/ac-simple-modal",
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "jquery",
+    "javascript",
+    "php",
+    "modal",
+    "popup"
+  ],
+  "author": "Richie Arnold <richard@ambercouch.co.uk>",
+  "contributors": [],
+  "dependencies": [],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ambercouch/ac-simple-modal.git"
+  },
+  "main": "ac-simple-modal.php",
+  "version": "1.0.0",
+  "devDependencies": {
+    "js-cookie": "^2.2.1",
+    "modaal": "^0.4.4"
+  }
+}
