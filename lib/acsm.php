@@ -1,5 +1,8 @@
 <?php
 
+// Include the plugin-code.
+require_once(  'acsm-cpt.php' );
+
 function acsm_modal() {
 
     $timber = false;
@@ -33,6 +36,7 @@ function acsm_modal() {
     echo $output;
 
 }
+
 add_action( 'wp_footer', 'acsm_modal', 100 );
 
 
