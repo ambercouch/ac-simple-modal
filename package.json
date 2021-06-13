@@ -21,6 +21,15 @@
   "main": "ac-simple-modal.php",
   "version": "1.0.0",
   "devDependencies": {
+    "autoprefixer": "^9.0.0",
+    "browser-sync": "^2.26.14",
+    "cssnano": "^3.10.0",
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
     "js-cookie": "^2.2.1",
     "modaal": "^0.4.4"
   }
