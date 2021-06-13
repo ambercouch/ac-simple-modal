@@ -4,3 +4,5 @@ node_modules/
 assets/css/
 
 gulpfile.js
+
+assets/js/scripts-acsm.js
