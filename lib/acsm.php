@@ -7,6 +7,27 @@ function acsm_modal() {
 
     $timber = false;
 
+    global $wp_query;
+    $post_id = $wp_query->post->ID;
+
+    $temp_q = $wp_query;
+
+    $wp_query = null;
+    $wp_query = new WP_Query();
+
+    $compare = (get_field('hide_or_show') == 'hide') ? 'LIKE' : 'NOT LIKE';
+    $wp_query->query(array(
+        'post_type' => 'acsm-simple-modal',
+        'showposts' => 1,
+        'meta_query' => array(
+            array(
+                'key' => 'show_on_pages',
+                'value' => $post_id,
+                'compare' => $compare
+            )
+        )
+    ));
+
     $template = __DIR__ . "/../templates/modal-template.php";
     $output = "";
 
