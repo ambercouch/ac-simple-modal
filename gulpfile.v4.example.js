@@ -1,4 +1,4 @@
-var siteLocalUrl = 'mysite.local';
+var siteLocalUrl = 'cathedraldentalclinic.local';
 var defaultBrowser = ['C:\\Program Files \\Firefox Developer Edition\\firefox.exe', 'Chrome'];
 
 const gulp = require('gulp');
@@ -11,33 +11,33 @@ const cssnano = require('cssnano');
 const browserSync = require('browser-sync').create();
 const pipeline = require('readable-stream').pipeline;
 const uglify = require('gulp-uglify');
-const svgstore = require('gulp-svgstore');
-const svgmin = require('gulp-svgmin');
-const rename = require('gulp-rename');
+//const svgstore = require('gulp-svgstore');
+//const svgmin = require('gulp-svgmin');
+//const rename = require('gulp-rename');
 
 /*
  SOURCE FILES
  */
 var jsScripts;
-var jsPath = 'assets/js/';
-var jsNpmPath = 'node_modules/';
+var jsPath = 'src/js/';
+var jsNpmPath = 'node_modules/'
 var jsCustomScripts = [
-    'ac_timber.js',
+    'acsm-main.js',
     // 'custom.js',
 ];
 
 var jsNpmScripts = [
     //All ready deprecated with browserify
-    'fitvids/dist/fitvids.js',
-    'remodal/dist/remodal.js',
-    'flickity/dist/flickity.pkgd.js'
+    //'fitvids/dist/fitvids.js',
+    'modaal/dist/js/modaal.js',
+    //'flickity/dist/flickity.pkgd.js'
 ];
 
 var cssNpmScripts = [
     //Add any vendor css scripts here that you want to include
     //'flickity/dist/flickity.css'
-    'remodal/dist/remodal.css',
-    'remodal/dist/remodal-default-theme.css',
+    //'remodal/dist/remodal.css',
+    'modaal/dist/css/modaal.scss',
 ];
 
 for (var i = 0; i < jsCustomScripts.length; i++) {
@@ -67,22 +67,22 @@ jsScripts = jsNpmScripts.concat(jsCustomScripts);
 function scripts() {
     return pipeline(
         gulp.src(jsScripts),
-        concat('main.js'),
+        concat('scripts-acsm.js'),
         uglify(),
-        gulp.dest('dist/js/')
+        gulp.dest('assets/js/')
     );
 }
 
 
 //compile scss into css
 function styles() {
-    return gulp.src('assets/scss/main.scss')
+    return gulp.src('src/scss/main.scss')
         .pipe(sourcemaps.init())
         .pipe(sass().on('error',sass.logError))
         .pipe(postcss([ autoprefixer(), cssnano({zindex: false}) ]))
-        .pipe(concat('style.css'))
+        .pipe(concat('styles-acsm.css'))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('.'))
+        .pipe(gulp.dest('assets/css/'))
         .pipe(browserSync.stream());
 }
 
@@ -111,10 +111,10 @@ function serve() {
         browser: defaultBrowser
     });
 
-    gulp.watch("assets/scss/**/*.scss",  styles);
-    gulp.watch("assets/images/svg/**/*.svg", svgdefs).on('change', browserSync.reload);
-    gulp.watch("templates/**/*.twig").on('change', browserSync.reload);
-    gulp.watch("assets/js/**/*.js", scripts ).on('change', browserSync.reload);
+    gulp.watch("src/scss/**/*.scss",  styles);
+    //gulp.watch("assets/images/svg/**/*.svg", svgdefs).on('change', browserSync.reload);
+    //gulp.watch("templates/**/*.twig").on('change', browserSync.reload);
+    gulp.watch("src/js/**/*.js", scripts ).on('change', browserSync.reload);
 
 }
 
