@@ -3,6 +3,8 @@
 // Include the plugin-code.
 require_once(  'acsm-cpt.php' );
 
+require_once(  'acsm-acf.php' );
+
 function acsm_modal() {
 
     $timber = false;
@@ -10,22 +12,41 @@ function acsm_modal() {
     global $wp_query;
     $post_id = $wp_query->post->ID;
 
+    /*
+     * Save the current query and create a new one
+     */
     $temp_q = $wp_query;
-
     $wp_query = null;
     $wp_query = new WP_Query();
 
-    $compare = (get_field('hide_or_show') == 'hide') ? 'LIKE' : 'NOT LIKE';
+    $meta_query_active = array(
+        'key' => 'acsm_activate_modal',
+        'value' => 1
+    );
+    $meta_query_selected_pages = array(
+        'key' => 'acsm_selected_pages',
+        'value' => $post_id,
+        'compare' => 'LIKE'
+    );
+    $meta_query_all_pages = array(
+        'key' => 'acsm_selected_pages',
+        'value' => ''
+    );
+
+    $meta_query =  array(
+        'relation' => 'AND',
+        $meta_query_active,
+        array(
+            'relation' => 'OR',
+            $meta_query_all_pages,
+            $meta_query_selected_pages
+        )
+    );
+
     $wp_query->query(array(
         'post_type' => 'acsm-simple-modal',
         'showposts' => 1,
-        'meta_query' => array(
-            array(
-                'key' => 'show_on_pages',
-                'value' => $post_id,
-                'compare' => $compare
-            )
-        )
+        'meta_query' => $meta_query
     ));
 
     $template = __DIR__ . "/../templates/modal-template.php";
