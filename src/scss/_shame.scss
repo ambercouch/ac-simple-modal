@@ -7,3 +7,11 @@ h3{
     margin-bottom: 12px;
   }
 }
+
+
+.modaal-container{
+  @include mq($from : desktop){
+    max-height: 75vh;
+    overflow: auto;
+  }
+}
