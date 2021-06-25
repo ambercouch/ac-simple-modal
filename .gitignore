@@ -6,3 +6,5 @@ assets/css/
 gulpfile.js
 
 assets/js/scripts-acsm.js
+
+assets/scss/_vendor.scss
