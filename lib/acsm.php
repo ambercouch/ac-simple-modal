@@ -5,6 +5,73 @@ require_once(  'acsm-cpt.php' );
 
 require_once(  'acsm-acf.php' );
 
+if (!function_exists('acsm_modal_sc'))
+{
+
+    function acsm_modal_sc($atts, $content)
+    {
+
+        extract(shortcode_atts(array(
+            'modal_id' => '',
+            'label' => 'Show',
+            'class' => 'c-btn'
+        ), $atts));
+
+        $timber = false;
+
+        global $wp_query;
+        $post_id = $wp_query->post->ID;
+
+        /*
+         * Save the current query and create a new one
+         */
+        $temp_q = $wp_query;
+        $wp_query = null;
+        $wp_query = new WP_Query();
+
+        $wp_query->query(array(
+            'post_type' => 'acsm-simple-modal',
+            'p' => $modal_id,
+
+        ));
+
+        $template = __DIR__ . "/../templates/modal-template-link.php";
+        $output = "";
+
+
+        if($timber === false){
+
+            while (have_posts()):
+                the_post();
+
+                ob_start();
+                ?>
+                <?php include("$template"); ?>
+                <?php
+                $output .= ob_get_contents();
+                ob_end_clean();
+            endwhile;
+
+        }else{
+            $context = Timber::get_context();
+            $context['posts'] = Timber::get_posts();
+            $templates = array('loop-template.twig');
+            ob_start();
+            Timber::render( $templates, $context );
+            $output .= ob_get_contents();
+            ob_end_clean();
+        }
+
+        $wp_query = $temp_q;
+
+        return $output;
+
+    }
+
+    add_shortcode('ac_simple_modal', 'acsm_modal_sc');
+
+}
+
 function acsm_modal() {
 
     $timber = false;
