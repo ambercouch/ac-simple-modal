@@ -13,6 +13,11 @@ h3{
   @include mq($from : desktop){
     max-height: 75vh;
     overflow: auto;
+
+  }
+  @include mq($from : tablet){
+    width: auto;
+    max-width: 100%;
   }
 }
 
