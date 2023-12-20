@@ -35,7 +35,7 @@ if (!function_exists('acsm_modal_sc'))
 
         ));
 
-        $template = __DIR__ . "/../templates/modal-template-link.php";
+        $template = __DIR__ . "/../templates/modal-template-on-click.php";
         $output = "";
 
 
@@ -124,6 +124,24 @@ function acsm_modal() {
 
         while (have_posts()):
             the_post();
+            $show_option = get_field('acsm_show_option', the_ID());
+
+
+            // Setting $template based on $show_option
+            switch ($show_option) {
+                case 'on_click':
+                    $template = __DIR__ . "/../templates/modal-template-on-click.php";                    break;
+                case 'on_load':
+                    $template = __DIR__ . "/../templates/modal-template-on-load.php";                    break;
+                case 'on_leave':
+                    $template = __DIR__ . "/../templates/modal-template-on-leave.php";                    break;
+                default:
+                    $template = __DIR__ . "/../templates/modal-template.php";            }
+
+            error_log('$show_option');
+            error_log(print_r($show_option, true));
+            error_log('$template');
+            error_log($template);
             ob_start();
             ?>
             <?php include("$template"); ?>

@@ -23,15 +23,13 @@ function ac_late_loader(){
                     'message' => 'Activate',
                     'default_value' => 1,
                     'ui' => 1,
-                    'ui_on_text' => '',
-                    'ui_off_text' => '',
                 ),
                 array(
-                    'key' => 'field_acsm_on_load',
-                    'label' => 'Show Modal on Page Load',
-                    'name' => 'acsm_on_load',
-                    'type' => 'true_false',
-                    'instructions' => 'Select "Yes" to show the modal as soon as the page loads',
+                    'key' => 'field_acsm_show_option',
+                    'label' => 'When to Show Modal',
+                    'name' => 'acsm_show_option',
+                    'type' => 'select',
+                    'instructions' => 'Select when you want to show the modal',
                     'required' => 0,
                     'conditional_logic' => array(
                         array(
@@ -42,16 +40,17 @@ function ac_late_loader(){
                             ),
                         ),
                     ),
+                    'choices' => array(
+                        'on_click' => 'Show on link click',
+                        'on_load' => 'Show on page load',
+                        'on_leave' => 'Show on user leaves',
+                    ),
+                    'default_value' => 'on_load',
                     'wrapper' => array(
                         'width' => '50',
                         'class' => '',
                         'id' => '',
                     ),
-                    'message' => 'Show on page load',
-                    'default_value' => 0,
-                    'ui' => 1,
-                    'ui_on_text' => '',
-                    'ui_off_text' => '',
                 ),
                 array(
                     'key' => 'field_acsm_selected_pages',
@@ -60,7 +59,7 @@ function ac_late_loader(){
                     'type' => 'relationship',
                     'instructions' => 'Select the pages to show the modal or leave blank to show on all pages',
                     'required' => 0,
-                        'conditional_logic' => array(
+                    'conditional_logic' => array(
                         array(
                             array(
                                 'field' => 'field_acsm_activate_modal',
@@ -68,9 +67,9 @@ function ac_late_loader(){
                                 'value' => '1',
                             ),
                             array(
-                                'field' => 'field_acsm_on_load',
+                                'field' => 'field_acsm_show_option',
                                 'operator' => '==',
-                                'value' => '1',
+                                'value' => 'on_load',
                             ),
                         )
                     ),
