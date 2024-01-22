@@ -23,10 +23,15 @@ $(function() {
         $.each($('[data-modal-opener]'), function (i) {
 
             var openId = $(this).attr('data-modal-opener');
+            var contentSource = $('[data-modal="'+openId+'"]').find('iframe').attr('data-src');
 
+            console.log('contentSource')
+            console.log(contentSource)
 
+            console.log("modaal is inline");
             $(this).modaal({
-                content_source: '[data-modal="'+openId+'"]'
+                type: 'video',
+                content_source: $('[data-modal="'+openId+'"]').find('iframe').attr('data-src')
             });
 
         })
