@@ -14,7 +14,8 @@ if (!function_exists('acsm_modal_sc'))
         extract(shortcode_atts(array(
             'modal_id' => '',
             'label' => 'Show',
-            'class' => 'c-btn'
+            'class' => 'c-btn',
+            'modal_type' => 'inline'
         ), $atts));
 
         $timber = false;
@@ -164,7 +165,7 @@ function acsm_modal() {
 
 }
 
-add_action( 'wp_footer', 'acsm_modal', 100 );
+//add_action( 'wp_footer', 'acsm_modal', 100 );
 
 
 function acsm_enqueue_scripts(){

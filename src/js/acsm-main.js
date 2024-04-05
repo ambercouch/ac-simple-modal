@@ -23,15 +23,19 @@ $(function() {
         $.each($('[data-modal-opener]'), function (i) {
 
             var openId = $(this).attr('data-modal-opener');
-            var contentSource = $('[data-modal="'+openId+'"]').find('iframe').attr('data-src');
+            var inlineModal = $('[data-modal="' + openId + '"]');
 
-            console.log('contentSource')
-            console.log(contentSource)
+            // Check for the 'data-modal-type' attribute and use it if it exists
+            var contentType = $(this).data('modal-type') || 'inline';
 
-            console.log("modaal is inline");
+            console.log('openId : ' + openId);
+            console.log('contentType : ' + contentType);
+
+            var contentSource = (contentType == 'video')? inlineModal.find('iframe').attr('data-src') : inlineModal ;
+
             $(this).modaal({
-                type: 'video',
-                content_source: $('[data-modal="'+openId+'"]').find('iframe').attr('data-src')
+                type: contentType,
+                content_source:  contentSource
             });
 
         })
