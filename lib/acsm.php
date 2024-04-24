@@ -36,7 +36,7 @@ if (!function_exists('acsm_modal_sc'))
 
         ));
 
-        $template = __DIR__ . "/../templates/modal-template-on-click.php";
+        $template = __DIR__ . "/../templates/modal-template-link.php";
         $output = "";
 
 
