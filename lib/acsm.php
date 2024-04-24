@@ -118,6 +118,23 @@ function acsm_modal() {
 
     while ($query->have_posts()) {
         $query->the_post();
+        $modal_post_id = get_the_ID(); // Gets the ID of the modal post
+        $show_option = get_field('acsm_show_option', $modal_post_id); // Use the modal post ID
+
+        // Logging for debugging
+        error_log("Modal post ID: " . $modal_post_id);
+        error_log("Show option: " . $show_option);
+
+
+        // Setting $template based on $show_option
+        switch ($show_option) {
+            case 'on_load':
+                $template = __DIR__ . "/../templates/modal-template-on-load.php";                    break;
+            case 'on_leave':
+                $template = __DIR__ . "/../templates/modal-template-on-leave.php";                    break;
+            default:
+                $template = __DIR__ . "/../templates/modal-template.php";            }
+
         include($template);
     }
 
