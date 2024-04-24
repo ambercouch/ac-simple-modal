@@ -74,95 +74,57 @@ if (!function_exists('acsm_modal_sc'))
 }
 
 function acsm_modal() {
+    global $post;
+    if (empty($post->ID)) {
+        return;
+    }
 
-    $timber = false;
-
-    global $wp_query;
-    $post_id = $wp_query->post->ID;
-
-    /*
-     * Save the current query and create a new one
-     */
-    $temp_q = $wp_query;
-    $wp_query = null;
-    $wp_query = new WP_Query();
-
-    $meta_query_active = array(
-        'key' => 'acsm_activate_modal',
-        'value' => 1
-    );
-    $meta_query_selected_pages = array(
-        'key' => 'acsm_selected_pages',
-        'value' => $post_id,
-        'compare' => 'LIKE'
-    );
-    $meta_query_all_pages = array(
-        'key' => 'acsm_selected_pages',
-        'value' => ''
-    );
-
-    $meta_query =  array(
+    // Define meta queries to check modal activation and page selection
+    $meta_query = array(
         'relation' => 'AND',
-        $meta_query_active,
+        array(
+            'key'     => 'acsm_activate_modal',
+            'value'   => 1,
+            'compare' => '='
+        ),
         array(
             'relation' => 'OR',
-            $meta_query_all_pages,
-            $meta_query_selected_pages
+            array(
+                'key'     => 'acsm_selected_pages',
+                'value'   => $post->ID,
+                'compare' => 'LIKE'  // Consider changing to 'IN' if storing IDs as an array
+            ),
+            array(
+                'key'     => 'acsm_selected_pages',
+                'value'   => '',  // Assuming this means the modal should appear on all pages
+                'compare' => '='
+            )
         )
     );
 
-    $wp_query->query(array(
-        'post_type' => 'acsm-simple-modal',
-        'showposts' => 1,
-        'meta_query' => $meta_query
+    // Query for modals with these specifications
+    $query = new WP_Query(array(
+        'post_type'      => 'acsm-simple-modal',
+        'posts_per_page' => 1,
+        'meta_query'     => $meta_query
     ));
 
-    $template = __DIR__ . "/../templates/modal-template.php";
-    $output = "";
-
-
-    if($timber === false){
-
-        while (have_posts()):
-            the_post();
-            $show_option = get_field('acsm_show_option', the_ID());
-
-
-            // Setting $template based on $show_option
-            switch ($show_option) {
-                case 'on_click':
-                    $template = __DIR__ . "/../templates/modal-template-on-click.php";                    break;
-                case 'on_load':
-                    $template = __DIR__ . "/../templates/modal-template-on-load.php";                    break;
-                case 'on_leave':
-                    $template = __DIR__ . "/../templates/modal-template-on-leave.php";                    break;
-                default:
-                    $template = __DIR__ . "/../templates/modal-template.php";            }
-
-            error_log('$show_option');
-            error_log(print_r($show_option, true));
-            error_log('$template');
-            error_log($template);
-            ob_start();
-            ?>
-            <?php include("$template"); ?>
-            <?php
-            $output .= ob_get_contents();
-            ob_end_clean();
-        endwhile;
-
-    }else{
-        $context = Timber::get_context();
-        $context['posts'] = Timber::get_posts();
-        $templates = array('loop-template.twig');
-        ob_start();
-        Timber::render( $templates, $context );
-        $output .= ob_get_contents();
-        ob_end_clean();
+    if (!$query->have_posts()) {
+        return;
     }
 
-    echo $output;
+    $template = __DIR__ . "/../templates/modal-template.php";
+    ob_start();
 
+    while ($query->have_posts()) {
+        $query->the_post();
+        include($template);
+    }
+
+    $output = ob_get_clean();
+    wp_reset_postdata(); // Very important to reset post data after modifying the query
+
+    echo $output;
 }
 
 add_action( 'wp_footer', 'acsm_modal', 100 );
