@@ -10,3 +10,5 @@ assets/js/scripts-acsm.js
 assets/scss/_vendor.scss
 
 .idea/
+
+*.zip
