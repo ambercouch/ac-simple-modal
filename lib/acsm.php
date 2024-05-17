@@ -113,6 +113,7 @@ function acsm_modal() {
     }
 
     $template = __DIR__ . "/../templates/modal-template.php";
+    $output = "";
     ob_start();
 
     while ($query->have_posts()) {
@@ -135,9 +136,10 @@ function acsm_modal() {
                 $template = __DIR__ . "/../templates/modal-template.php";            }
 
         include($template);
-    }
 
-    $output = ob_get_clean();
+        $output .= ob_get_clean();  // Append the current buffer to $output and then clean it
+        ob_start();  // Start a new buffer for the next iteration
+    }
     wp_reset_postdata(); // Very important to reset post data after modifying the query
 
     echo $output;
