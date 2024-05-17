@@ -105,7 +105,6 @@ function acsm_modal() {
     // Query for modals with these specifications
     $query = new WP_Query(array(
         'post_type'      => 'acsm-simple-modal',
-        'posts_per_page' => 1,
         'meta_query'     => $meta_query
     ));
 
