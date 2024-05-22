@@ -1,6 +1,6 @@
 console.log('acsm testing may 2024 scope');
 let settings = {
-    debug : true,
+    debug : false,
     expires : 1
 }
 
@@ -21,27 +21,41 @@ jQuery(function($) {
     $(function() {
         $(document).ready(function () {
 
-            // $.each($('[data-modal-opener]'), function (i) {
-            //
-            //     var openId = $(this).attr('data-modal-opener');
-            //
-            //
-            //     $(this).modaal({
-            //         content_source: '[data-modal="'+openId+'"]'
-            //     });
-            //
-            // })
+            $.each($('[data-modal-opener]'), function (i) {
+
+                var openId = $(this).attr('data-modal-opener');
+
+
+                $(this).modaal({
+                    content_source: '[data-modal="'+openId+'"]'
+                });
+
+            })
 
             // Event listener for mouse leaving the viewport
-            //         document.addEventListener('mouseleave', function(e) {
-            //             if (e.clientY <= 0 && Cookies.get('_acsm_intented') != 1) {
-            //                 //Cookies.set('_acsm_intented', '1')
-            //                 $('[data-modal-onexit]').modaal('open');
-            //             }
-            //         });
+            $('[data-modal-onexit]').each(function(i) {
+                console.log('on exit i : ' + i);
+                let $modal = $(this);
+                let modalSettings = {
+                    content_source: $modal,
+                    overlay_opacity: 0.4,
+                    hide_close: false,
+                    custom_class: 'act-modal-exit-' + i // Set custom class to uniquely identify modals
+
+                };
+                $modal.modaal(modalSettings);
+                document.addEventListener('mouseleave', function (e) {
+                    if (e.clientY <= 0 && Cookies.get('_acsm_intented') != 1) {
+                        console.log('leaving !');
+                        (typeof settings !== 'undefined' && settings.debug != true) ? Cookies.set('_acsm_intented', '1') : console.log('cookie test');
+                        $modal.modaal('open');
+                    }
+                });
+            });
+
 
             $('[data-modal-onload]').each(function(i) {
-                console.log('i : ' + i);
+                console.log('on load i : ' + i);
 
                 let $modal = $(this);
 
@@ -74,6 +88,8 @@ jQuery(function($) {
                 $(document).on('click', '.act-modal-' +i+ ' .modaal-close', function () {
                     $modal.modaal('close');
                 })
+
+
             });
 
 
