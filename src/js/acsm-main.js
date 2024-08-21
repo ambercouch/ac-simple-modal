@@ -12,7 +12,7 @@ if (settings.debug == true){
 
 function setCookie(name = 'acsm_closed', val = '1'){
     //console.log('cookie SET');
-    Cookies.set(name, val, { expires: 0.5 })
+    Cookies.set(name, val, { expires: 7 })
 }
 
 
@@ -47,7 +47,7 @@ jQuery(function($) {
                 document.addEventListener('mouseleave', function (e) {
                     if (e.clientY <= 0 && Cookies.get('_acsm_intented') != 1) {
                         console.log('leaving !');
-                        (typeof settings !== 'undefined' && settings.debug != true) ? Cookies.set('_acsm_intented', '1') : console.log('cookie test');
+                        (typeof settings !== 'undefined' && settings.debug != true) ? Cookies.set('_acsm_intented', '1', { expires: 30 }) : console.log('cookie test');
                         $modal.modaal('open');
                     }
                 });
