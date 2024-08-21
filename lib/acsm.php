@@ -36,7 +36,7 @@ if (!function_exists('acsm_modal_sc'))
 
         ));
 
-        $template = __DIR__ . "/../templates/modal-template-link.php";
+        $template = __DIR__ . "/../templates/modal-template-on-click.php";
         $output = "";
 
 
@@ -112,7 +112,7 @@ function acsm_modal() {
         return;
     }
 
-    $template = __DIR__ . "/../templates/modal-template.php";
+
     $output = "";
     ob_start();
 
@@ -133,7 +133,7 @@ function acsm_modal() {
             case 'on_leave':
                 $template = __DIR__ . "/../templates/modal-template-on-leave.php";                    break;
             default:
-                $template = __DIR__ . "/../templates/modal-template.php";            }
+                $template = __DIR__ . "/../templates/modal-template-on-load.php";            }
 
         include($template);
 
