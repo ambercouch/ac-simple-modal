@@ -8,68 +8,71 @@ require_once(  'acsm-acf.php' );
 if (!function_exists('acsm_modal_sc'))
 {
 
-    function acsm_modal_sc($atts, $content)
+    function acsm_modal_sc($atts, $content = null)
     {
-
-        extract(shortcode_atts(array(
+        // Sanitize and set default attributes
+        $atts = shortcode_atts(array(
             'modal_id' => '',
             'label' => 'Show',
             'class' => 'c-btn',
-            'modal_type' => 'inline'
-        ), $atts));
+            'modal_type' => 'inline' // Ensure modal_type is set here
+        ), $atts, 'ac_simple_modal');
 
-        $timber = false;
-
-        global $wp_query;
-        $post_id = $wp_query->post->ID;
-
-        /*
-         * Save the current query and create a new one
-         */
-        $temp_q = $wp_query;
-        $wp_query = null;
-        $wp_query = new WP_Query();
-
-        $wp_query->query(array(
-            'post_type' => 'acsm-simple-modal',
-            'p' => $modal_id,
-
-        ));
-
-        $template = __DIR__ . "/../templates/modal-template-on-click.php";
-        $output = "";
-
-
-        if($timber === false){
-
-            while (have_posts()):
-                the_post();
-
-                ob_start();
-                ?>
-                <?php include("$template"); ?>
-                <?php
-                $output .= ob_get_contents();
-                ob_end_clean();
-            endwhile;
-
-        }else{
-            $context = Timber::get_context();
-            $context['posts'] = Timber::get_posts();
-            $templates = array('loop-template.twig');
-            ob_start();
-            Timber::render( $templates, $context );
-            $output .= ob_get_contents();
-            ob_end_clean();
+        // Return early if no modal ID is provided
+        if (empty($atts['modal_id'])) {
+            return '';
         }
 
-        $wp_query = $temp_q;
+        // Create a new query for the modal post
+        $modal_query = new WP_Query(array(
+            'post_type' => 'acsm-simple-modal',
+            'p' => $atts['modal_id'],
+        ));
+
+        // Check if Timber is available
+        $timber = class_exists('Timber');
+
+        // Initialize output
+        $output = '';
+
+        if ($modal_query->have_posts()) {
+            if ($timber === false) {
+                while ($modal_query->have_posts()) {
+                    $modal_query->the_post();
+
+                    // Make attributes available to the template
+                    $class = esc_attr($atts['class']);
+                    $label = esc_html($atts['label']);
+                    $modal_type = esc_attr($atts['modal_type']); // Make sure modal_type is available
+
+                    // Start output buffering
+                    ob_start();
+                    include __DIR__ . "/../templates/modal-template-on-click.php";
+                    $output .= ob_get_clean();
+                }
+            } else {
+                $context = Timber::get_context();
+                $context['posts'] = Timber::get_posts($modal_query);
+                $context['class'] = $atts['class'];
+                $context['label'] = $atts['label'];
+                $context['modal_type'] = $atts['modal_type'];
+                $templates = array('loop-template.twig');
+
+                // Start output buffering
+                ob_start();
+                Timber::render($templates, $context);
+                $output .= ob_get_clean();
+            }
+        }
+
+        // Reset post data
+        wp_reset_postdata();
 
         return $output;
-
     }
 
     add_shortcode('ac_simple_modal', 'acsm_modal_sc');
+
 
 }
 
