@@ -56,20 +56,3 @@ h3{
 close:focus:before, .modaal-close:hover:after, .modaal-close:hover:before {
   background: #b93d0c;
 }
-
-.c-btn--primary{
-  background: #2c5c88;
-  color: #ffffff;
-  border-color: #2c5c88;
-  text-align: center;
-  white-space: nowrap;
-  border: 2px solid;
-  border-radius: 2px;
-  padding: 9px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-}
-.c-btn--primary:hover{
-  text-decoration: none;
-  background: darken(#2c5c88, 10%);
-}
