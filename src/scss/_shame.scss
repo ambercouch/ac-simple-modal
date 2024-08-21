@@ -16,7 +16,7 @@ h3{
 
   }
   @include mq($from : tablet){
-    width: auto;
+    width: 75%;
     max-width: 100%;
   }
 }
