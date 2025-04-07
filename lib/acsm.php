@@ -5,10 +5,8 @@ require_once(  'acsm-cpt.php' );
 
 require_once(  'acsm-acf.php' );
 
-if (!function_exists('acsm_modal_sc'))
-{
 
-    if (!function_exists('acsm_modal_sc'))
+if (!function_exists('acsm_modal_sc'))
     {
 
         function acsm_modal_sc($atts, $content = null)
@@ -81,7 +79,6 @@ if (!function_exists('acsm_modal_sc'))
         add_shortcode('ac_simple_modal', 'acsm_modal_sc');
     }
 
-}
 
 function acsm_modal() {
     global $post;
