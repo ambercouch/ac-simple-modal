@@ -62,3 +62,19 @@ close:focus:before, .modaal-close:hover:after, .modaal-close:hover:before {
   width: 800px !important;
   max-width: 100%;
 }
+
+.c-btn--primary{
+  background: #ffe464;
+  border: 1px solid #cdd4dd;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 5px;
+  padding: 9px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  text-decoration: none;
+}
+.c-btn--primary:hover{
+  text-decoration: none;
+  background: darken(#ffe464, 10%);
+}
