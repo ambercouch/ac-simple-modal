@@ -8,72 +8,78 @@ require_once(  'acsm-acf.php' );
 if (!function_exists('acsm_modal_sc'))
 {
 
-    function acsm_modal_sc($atts, $content = null)
+    if (!function_exists('acsm_modal_sc'))
     {
-        // Sanitize and set default attributes
-        $atts = shortcode_atts(array(
-            'modal_id' => '',
-            'label' => 'Show',
-            'class' => 'c-btn',
-            'modal_type' => 'inline', // Ensure modal_type is set here
-            'timber' => 'false'
-        ), $atts, 'ac_simple_modal');
 
-        // Return early if no modal ID is provided
-        if (empty($atts['modal_id'])) {
-            return '';
-        }
+        function acsm_modal_sc($atts, $content = null)
+        {
+            // Sanitize and set default attributes
+            $atts = shortcode_atts(array(
+                'modal_id' => '',
+                'label' => 'Show',
+                'class' => 'c-btn',
+                'modal_type' => 'inline',
+                'timber' => 'false'
+            ), $atts, 'ac_simple_modal');
 
-        // Create a new query for the modal post
-        $modal_query = new WP_Query(array(
-            'post_type' => 'acsm-simple-modal',
-            'p' => $atts['modal_id'],
-        ));
+            // Return early if no modal ID is provided
+            if (empty($atts['modal_id']))
+            {
+                return '';
+            }
 
-        // Check if Timber is available
-        //$timber = false;
+            // Assign variables
+            $modal_id = esc_attr($atts['modal_id']);
+            $label = esc_html($atts['label']);
+            $class = esc_attr($atts['class']);
+            $modal_type = esc_attr($atts['modal_type']);
+            $timber = esc_attr($atts['timber']);
 
-        // Initialize output
-        $output = '';
+            // Prepare output
+            $output = '';
 
-        if ($modal_query->have_posts()) {
-            if ($timber == false) {
-                while ($modal_query->have_posts()) {
+            // Create a new query for the modal post
+            $modal_query = new WP_Query(array(
+                'post_type' => 'acsm-simple-modal',
+                'p' => $modal_id,
+            ));
+
+            if ($modal_query->have_posts())
+            {
+                while ($modal_query->have_posts())
+                {
                     $modal_query->the_post();
 
-                    // Make attributes available to the template
-                    $class = esc_attr($atts['class']);
-                    $label = esc_html($atts['label']);
-                    $modal_type = esc_attr($atts['modal_type']); // Make sure modal_type is available
-
-                    // Start output buffering
                     ob_start();
-                    include __DIR__ . "/../templates/modal-template-on-click.php";
+
+                    // Timber check (TIB site)
+                    if ($timber != 'false')
+                    {
+                        $output .= "timber";
+                        $output .= $timber;
+                        Timber::render('modal.twig', array(
+                            'modal_id' => $modal_id,
+                            'label' => $label,
+                            'class' => $class,
+                            'modal_type' => $modal_type,
+                            'post' => Timber::get_post(),
+                        ));
+                    } else
+                    {
+                        // Fallback for PCM or non-Timber installs
+                        include(__DIR__ . "/../templates/modal-template-on-click.php");
+                    }
+
                     $output .= ob_get_clean();
                 }
-            } else {
-                $context = Timber::get_context();
-                $context['posts'] = Timber::get_posts($modal_query);
-                $context['class'] = $atts['class'];
-                $context['label'] = $atts['label'];
-                $context['modal_type'] = $atts['modal_type'];
-                $templates = array('loop-template.twig');
-
-                // Start output buffering
-                ob_start();
-                Timber::render($templates, $context);
-                $output .= ob_get_clean();
             }
+
+            wp_reset_postdata();
+            return $output;
         }
 
-        // Reset post data
-        wp_reset_postdata();
-
-        return $output;
+        add_shortcode('ac_simple_modal', 'acsm_modal_sc');
     }
-
-    add_shortcode('ac_simple_modal', 'acsm_modal_sc');
-
 
 }
 
