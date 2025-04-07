@@ -15,7 +15,8 @@ if (!function_exists('acsm_modal_sc'))
             'modal_id' => '',
             'label' => 'Show',
             'class' => 'c-btn',
-            'modal_type' => 'inline' // Ensure modal_type is set here
+            'modal_type' => 'inline', // Ensure modal_type is set here
+            'timber' => 'false'
         ), $atts, 'ac_simple_modal');
 
         // Return early if no modal ID is provided
@@ -30,13 +31,13 @@ if (!function_exists('acsm_modal_sc'))
         ));
 
         // Check if Timber is available
-        $timber = class_exists('Timber');
+        //$timber = false;
 
         // Initialize output
         $output = '';
 
         if ($modal_query->have_posts()) {
-            if ($timber === false) {
+            if ($timber == false) {
                 while ($modal_query->have_posts()) {
                     $modal_query->the_post();
 
