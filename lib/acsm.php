@@ -80,79 +80,89 @@ if (!function_exists('acsm_modal_sc'))
     }
 
 
-function acsm_modal() {
-    global $post;
-    if (empty($post->ID)) {
-        return;
-    }
+if (!function_exists('acsm_modal')) {
 
-    // Define meta queries to check modal activation and page selection
-    $meta_query = array(
-        'relation' => 'AND',
-        array(
-            'key'     => 'acsm_activate_modal',
-            'value'   => 1,
-            'compare' => '='
-        ),
-        array(
-            'relation' => 'OR',
+    function acsm_modal() {
+        error_log('acsm_modal logged');
+        global $post;
+
+        if (empty($post->ID)) {
+            return;
+        }
+
+        // Define meta queries to check modal activation and page selection
+        $meta_query = array(
+            'relation' => 'AND',
             array(
-                'key'     => 'acsm_selected_pages',
-                'value'   => $post->ID,
-                'compare' => 'LIKE'  // Consider changing to 'IN' if storing IDs as an array
+                'key'     => 'acsm_activate_modal',
+                'value'   => 1,
+                'compare' => '='
             ),
             array(
-                'key'     => 'acsm_selected_pages',
-                'value'   => '',  // Assuming this means the modal should appear on all pages
-                'compare' => '='
+                'relation' => 'OR',
+                array(
+                    'key'     => 'acsm_selected_pages',
+                    'value'   => $post->ID,
+                    'compare' => 'LIKE'
+                ),
+                array(
+                    'key'     => 'acsm_selected_pages',
+                    'value'   => '',
+                    'compare' => '='
+                )
             )
-        )
-    );
+        );
 
-    // Query for modals with these specifications
-    $query = new WP_Query(array(
-        'post_type'      => 'acsm-simple-modal',
-        'meta_query'     => $meta_query
-    ));
+        // Query for modals with these specifications
+        $query = new WP_Query(array(
+            'post_type'  => 'acsm-simple-modal',
+            'meta_query' => $meta_query
+        ));
 
-    if (!$query->have_posts()) {
-        return;
+        if (!$query->have_posts()) {
+            return;
+        }
+
+        $output = "";
+        ob_start();
+
+        while ($query->have_posts()) {
+            $query->the_post();
+            $modal_post_id = get_the_ID();
+            $show_option = get_field('acsm_show_option', $modal_post_id);
+
+            // Logging for debugging
+            error_log("Modal post ID: " . $modal_post_id);
+            error_log("Show option: " . $show_option);
+
+            // Choose template
+            switch ($show_option) {
+                case 'on_load':
+                    $template = __DIR__ . '/../templates/modal-template-on-load.php';
+                    break;
+                case 'on_leave':
+                    $template = __DIR__ . '/../templates/modal-template-on-leave.php';
+                    break;
+                default:
+                    $template = __DIR__ . '/../templates/modal-template.php';
+            }
+
+            if (file_exists($template)) {
+                include($template);
+            } else {
+                error_log("Missing modal template: " . $template);
+            }
+
+            $output .= ob_get_clean();
+            ob_start();
+        }
+
+        wp_reset_postdata();
+        echo $output;
     }
 
-
-    $output = "";
-    ob_start();
-
-    while ($query->have_posts()) {
-        $query->the_post();
-        $modal_post_id = get_the_ID(); // Gets the ID of the modal post
-        $show_option = get_field('acsm_show_option', $modal_post_id); // Use the modal post ID
-
-        // Logging for debugging
-        error_log("Modal post ID: " . $modal_post_id);
-        error_log("Show option: " . $show_option);
-
-
-        // Setting $template based on $show_option
-        switch ($show_option) {
-            case 'on_load':
-                $template = __DIR__ . "/../templates/modal-template-on-load.php";                    break;
-            case 'on_leave':
-                $template = __DIR__ . "/../templates/modal-template-on-leave.php";                    break;
-            default:
-                $template = __DIR__ . "/../templates/modal-template-on-load.php";            }
-
-        include($template);
-
-        $output .= ob_get_clean();  // Append the current buffer to $output and then clean it
-        ob_start();  // Start a new buffer for the next iteration
-    }
-    wp_reset_postdata(); // Very important to reset post data after modifying the query
-
-    echo $output;
+    add_action('wp_footer', 'acsm_modal', 100);
 }
-
-add_action( 'wp_footer', 'acsm_modal', 100 );
 
 
 function acsm_enqueue_scripts(){
