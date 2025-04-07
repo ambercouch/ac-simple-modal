@@ -1,99 +1,80 @@
-console.log('acsm testing may 2024 scope');
+// Universal settings
 let settings = {
-    debug : false,
-    expires : 1
+    debug: false,
+    expires: 1
+};
+
+// Cookie helpers
+function setCookie(name = 'acsm_closed', val = '1') {
+    Cookies.set(name, val, { expires: settings.expires });
 }
 
-if (settings.debug == true){
+// Reset cookies for debug mode
+if (settings.debug) {
     Cookies.set('acsm_closed', 0, { expires: 7 });
     Cookies.set('_acsm_intented', 0, { expires: 7 });
-
 }
 
-function setCookie(name = 'acsm_closed', val = '1'){
-    //console.log('cookie SET');
-    Cookies.set(name, val, { expires: 7 })
-}
-
-
-
+// Init modals
 jQuery(function($) {
-    $(function() {
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            $.each($('[data-modal-opener]'), function (i) {
+        // Openers (inline / video)
+        $('[data-modal-opener]').each(function () {
+            const openId = $(this).attr('data-modal-opener');
+            const modalType = $(this).data('modal-type') || 'inline';
+            const $modal = $('[data-modal="' + openId + '"]');
+            const contentSrc = modalType === 'video' ? $modal.find('iframe').attr('data-src') : $modal;
 
-                var openId = $(this).attr('data-modal-opener');
+            $(this).modaal({
+                type: modalType,
+                content_source: contentSrc
+            });
+        });
 
+        // ON EXIT modals
+        $('[data-modal-onexit]').each(function(i) {
+            const $modal = $(this);
+            const modalClass = 'acsm-exit-' + i;
 
-                $(this).modaal({
-                    content_source: '[data-modal="'+openId+'"]'
-                });
-
-            })
-
-            // Event listener for mouse leaving the viewport
-            $('[data-modal-onexit]').each(function(i) {
-                console.log('on exit i : ' + i);
-                let $modal = $(this);
-                let modalSettings = {
-                    content_source: $modal,
-                    overlay_opacity: 0.4,
-                    hide_close: false,
-                    custom_class: 'act-modal-exit-' + i // Set custom class to uniquely identify modals
-
-                };
-                $modal.modaal(modalSettings);
-                document.addEventListener('mouseleave', function (e) {
-                    if (e.clientY <= 0 && Cookies.get('_acsm_intented') != 1) {
-                        console.log('leaving !');
-                        (typeof settings !== 'undefined' && settings.debug != true) ? Cookies.set('_acsm_intented', '1', { expires: 30 }) : console.log('cookie test');
-                        $modal.modaal('open');
-                    }
-                });
+            $modal.modaal({
+                content_source: $modal,
+                custom_class: modalClass,
+                overlay_opacity: 0.4
             });
 
-
-            $('[data-modal-onload]').each(function(i) {
-                console.log('on load i : ' + i);
-
-                let $modal = $(this);
-
-
-                let modalSettings = {
-                    content_source: $modal,
-                    overlay_opacity: 0.4,
-                    after_close: (typeof settings !== 'undefined' && settings.debug != true) ? setCookie : function() { return false; },
-                    hide_close: false,
-                    after_open: function(){
-                        console.log('on open')
-                        let modalID = $(this).attr('data-modaal-scope');
-                        console.log('data-modaal-scope');
-                        console.log(modalID);
-                    },
-                    custom_class: 'act-modal-' + i // Set custom class to uniquely identify modals
-
-                };
-
-                $modal.modaal(modalSettings);
-
-                var acsm_closed = Cookies.get('acsm_closed');
-
-                // Open the onload modal if not closed
-                if (acsm_closed != 1) {
+            document.addEventListener('mouseleave', function(e) {
+                if (e.clientY <= 0 && Cookies.get('_acsm_intented') != '1') {
+                    settings.debug ? console.log('Exit detected') : Cookies.set('_acsm_intented', '1', { expires: 30 });
                     $modal.modaal('open');
                 }
+            });
+        });
 
-                // Bind the close event to the modal instance
-                $(document).on('click', '.act-modal-' +i+ ' .modaal-close', function () {
-                    $modal.modaal('close');
-                })
+        // ON LOAD modals
+        $('[data-modal-onload]').each(function(i) {
+            const $modal = $(this);
+            const modalClass = 'acsm-load-' + i;
 
-
+            $modal.modaal({
+                content_source: $modal,
+                custom_class: modalClass,
+                overlay_opacity: 0.4,
+                after_open: function() {
+                    if (settings.debug) {
+                        console.log('Opened modal:', $(this).attr('data-modaal-scope'));
+                    }
+                },
+                after_close: settings.debug ? function() {} : setCookie
             });
 
+            if (Cookies.get('acsm_closed') != '1') {
+                $modal.modaal('open');
+            }
 
-        })
+            $(document).on('click', '.' + modalClass + ' .modaal-close', function () {
+                $modal.modaal('close');
+            });
+        });
     });
 });
-
