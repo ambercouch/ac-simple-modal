@@ -177,4 +177,4 @@ function acsm_enqueue_styles() {
     wp_register_style('acsm_modaal_styles', plugins_url('../assets/css/styles-acsm.css', __FILE__));
     wp_enqueue_style('acsm_modaal_styles');
 }
-add_action( 'get_footer', 'acsm_enqueue_styles' );
+add_action( 'wp_footer', 'acsm_enqueue_styles' );
