@@ -6,7 +6,7 @@
  *  AC : unsure pros/cons of each
  */
 
-add_action('plugins_loaded', 'ac_late_loader');
+add_action('after_setup_theme', 'ac_late_loader');
     function ac_late_loader(){
     if( function_exists('acf_add_local_field_group') ):
 

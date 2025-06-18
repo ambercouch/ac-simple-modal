@@ -63,21 +63,20 @@ close:focus:before, .modaal-close:hover:after, .modaal-close:hover:before {
   max-width: 100%;
 }
 
-.c-btn--primary{
-  background: #ffe464;
-  border: 1px solid #cdd4dd;
-  text-align: center;
-  white-space: nowrap;
-  border-radius: 5px;
-  padding: 9px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-  text-decoration: none;
-}
-.c-btn--primary:hover{
-  text-decoration: none;
-  background: darken(#ffe464, 10%);
-}
+//.c-btn--primary{
+//  background: #ffe464;
+//  border: 1px solid #cdd4dd;
+//  text-align: center;
+//  white-space: nowrap;
+//  border-radius: 5px;
+//  padding: 9px;
+//  cursor: pointer;
+//  transition: background 0.3s ease-in-out;
+//  text-decoration: none;
+//}
+//.c-btn--primary:hover{
+//  text-decoration: none;
+//  background: darken(#ffe464, 10%);
 
 .c-acsm-img-wrapper {
   position: relative;
@@ -94,8 +93,8 @@ close:focus:before, .modaal-close:hover:after, .modaal-close:hover:before {
   background: rgba(0, 0, 0, 0.6);
   color: white;
   padding: 0.5em 1em;
-  border-radius: 3px;
-  font-weight: bold;
+  border-radius: 0;
+  font-weight: normal;
   pointer-events: none;
   .c-acsm-img-wrapper:hover &{
     background: rgba(0, 0, 0, 0.9);
@@ -105,5 +104,5 @@ close:focus:before, .modaal-close:hover:after, .modaal-close:hover:before {
 .has-label-below .c-acsm-img__label {
   display: block;
   margin-top: 0.5em;
-  font-weight: bold;
+  font-weight: normal;
 }
