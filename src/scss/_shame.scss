@@ -57,52 +57,18 @@ close:focus:before, .modaal-close:hover:after, .modaal-close:hover:before {
   background: #b93d0c;
 }
 
-
-.modaal-container {
-  width: 800px !important;
-  max-width: 100%;
-}
-
-//.c-btn--primary{
-//  background: #ffe464;
-//  border: 1px solid #cdd4dd;
-//  text-align: center;
-//  white-space: nowrap;
-//  border-radius: 5px;
-//  padding: 9px;
-//  cursor: pointer;
-//  transition: background 0.3s ease-in-out;
-//  text-decoration: none;
-//}
-//.c-btn--primary:hover{
-//  text-decoration: none;
-//  background: darken(#ffe464, 10%);
-
-.c-acsm-img-wrapper {
-  position: relative;
-  display: inline-block;
+.c-btn--primary{
+  background: #ffe464;
+  border: 1px solid #cdd4dd;
   text-align: center;
-}
-
-.c-acsm-img__button.is-overlay {
+  white-space: nowrap;
+  border-radius: 5px;
+  padding: 9px;
+  cursor: pointer;
   transition: background 0.3s ease-in-out;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  padding: 0.5em 1em;
-  border-radius: 0;
-  font-weight: normal;
-  pointer-events: none;
-  .c-acsm-img-wrapper:hover &{
-    background: rgba(0, 0, 0, 0.9);
-  }
+  text-decoration: none;
 }
-
-.has-label-below .c-acsm-img__label {
-  display: block;
-  margin-top: 0.5em;
-  font-weight: normal;
+.c-btn--primary:hover{
+  text-decoration: none;
+  background: darken(#ffe464, 10%);
 }
