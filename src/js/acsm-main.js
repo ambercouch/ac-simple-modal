@@ -19,12 +19,21 @@ if (settings.debug) {
 jQuery(function($) {
     $(document).ready(function () {
 
+        console.log('tib test');
         // Openers (inline / video)
         $('[data-modal-opener]').each(function () {
             const openId = $(this).attr('data-modal-opener');
             const modalType = $(this).data('modal-type') || 'inline';
             const $modal = $('[data-modal="' + openId + '"]');
             const contentSrc = modalType === 'video' ? $modal.find('iframe').attr('data-src') : $modal;
+
+
+            console.log('contentSrc');
+            console.log(contentSrc);
+
+            console.log('openId');
+            console.log(openId);
+
 
             $(this).modaal({
                 type: modalType,

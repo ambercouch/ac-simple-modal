@@ -51,58 +51,57 @@ function acsm_add_modal_menu_link_attributes($atts, $item, $args) {
 }
 
 
-if (!function_exists('acsm_output_modals_from_menu'))
-{
-    add_action('wp_footer', 'acsm_output_modals_from_menu');
+if ( ! function_exists( 'acsm_output_modals_from_menu' ) ) {
+    add_action( 'wp_footer', 'acsm_output_modals_from_menu' );
 
     function acsm_output_modals_from_menu() {
-        global $wp_nav_menu_items;
-
-        if (empty($wp_nav_menu_items)) {
+        // 1) grab the primary menu items directly
+        $locations = get_nav_menu_locations();
+        if ( empty( $locations['primary'] ) ) {
+            return;
+        }
+        $menu_obj  = wp_get_nav_menu_object( $locations['primary'] );
+        if ( ! $menu_obj ) {
+            return;
+        }
+        $items = wp_get_nav_menu_items( $menu_obj->term_id );
+        if ( empty( $items ) ) {
             return;
         }
 
-        $printed_ids = [];
-
-        foreach ($wp_nav_menu_items as &$item) {
-            if (!empty($item->acsm_modal_id) && !in_array($item->acsm_modal_id, $printed_ids, true)) {
-                $modal_id = intval($item->acsm_modal_id);
-
-                $modal_query = new WP_Query(array(
-                    'post_type' => 'acsm-simple-modal',
-                    'p'         => $modal_id,
-                ));
-
-                if ($modal_query->have_posts()) {
-                    while ($modal_query->have_posts()) {
-                        $modal_query->the_post();
-
-                        $content = get_the_content();
-
-                        // Detect if it's a video
-                        $is_video = stripos($content, '<iframe') !== false;
-
-                        // Update modal type for link attributes
-                        $item->acsm_modal_type = $is_video ? 'video' : 'inline';
-
-                        // Output modal (no changes needed here)
-                        ?>
-                        <div id="modal<?php echo esc_attr(get_the_ID()); ?>"
-                             data-modal="modal<?php echo esc_attr(get_the_ID()); ?>"
-                             style="display:none;"
-                             class="c-acsm__modal is-on-click">
-                            <div class="c-acsm__content">
-                                <?php the_content(); ?>
-                            </div>
-                        </div>
-                        <?php
-
-                        $printed_ids[] = $modal_id;
-                    }
-
-                    wp_reset_postdata();
+        // 2) loop through and find any acsm-simple-modal items
+        $printed = [];
+        foreach ( $items as $item ) {
+            if ( $item->object === 'acsm-simple-modal' && ! in_array( $item->object_id, $printed, true ) ) {
+                $modal_id  = intval( $item->object_id );
+                $modal_post = get_post( $modal_id );
+                if ( ! $modal_post ) {
+                    continue;
                 }
+
+                // detect video vs inline
+                $content = $modal_post->post_content;
+                $is_video = stripos( $content, '<iframe' ) !== false;
+
+                // update the menu‐item’s type so nav_menu_link_attributes() can pass the right data
+                $item->acsm_modal_type = $is_video ? 'video' : 'inline';
+
+                // 3) print the hidden modal container
+                ?>
+              <div id="modal<?php echo esc_attr( $modal_post->ID ); ?>"
+                   data-modal="modal<?php echo esc_attr( $modal_post->ID ); ?>"
+                   data-modal-type="<?php echo esc_attr( $item->acsm_modal_type ); ?>"
+                   style="display:none;"
+                   class="c-acsm__modal is-on-click">
+                <div class="c-acsm__content">
+                    <?php echo apply_filters( 'the_content', $modal_post->post_content ); ?>
+                </div>
+              </div>
+                <?php
+
+                $printed[] = $modal_id;
             }
         }
     }
 }
+
